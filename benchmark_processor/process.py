@@ -52,9 +52,9 @@ if __name__ == "__main__":
                 print(bench_name)
                 for key, prompt in prompts_dict.items():
                     if 'llm' in key:
-                        sample[key] = llm([prompt])[0]
-                sample["benchmark"] = bench_name
-                res.append(sample)
+                        prompts_dict[key] = llm([prompt])[0]
+                prompts_dict["benchmark"] = bench_name
+                res.append(prompts_dict)
 
             with open(f"output/output_{k}.yaml", "w", encoding='utf-8') as file:
                 yaml.dump(res, file, sort_keys=False)
