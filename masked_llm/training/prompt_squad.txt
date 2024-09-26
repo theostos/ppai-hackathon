@@ -1,0 +1,15 @@
+<|start_header_id|>system<|end_header_id|>
+
+You are a helpful assistant tasked with extracting a specific passage from a provided text to answer a question. Always give the most relevant and concise passage.
+<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+Given the following text:
+{context}
+Here is a question based on that text:
+{question}
+Your task is to extract only the portion of the text that directly answers the question.
+Start your answer with "The relevant extract is: " following by the relevant words extract from the text to answer the question:
+{question}
+<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+The relevant extract is: {answer}

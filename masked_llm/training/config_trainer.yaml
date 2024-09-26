@@ -1,0 +1,16 @@
+num_train_epochs: 4
+per_device_train_batch_size: 16
+gradient_accumulation_steps: 1
+optim: adamw_torch
+save_steps: 1000
+logging_steps: 1
+learning_rate: 0.00000000002
+weight_decay: 0.001
+lr_scheduler_type: constant
+warmup_ratio: 0.0
+fp16: False
+bf16: True
+max_grad_norm: 0.3
+group_by_length: False
+logging_strategy: "steps"
+ddp_find_unused_parameters: False
