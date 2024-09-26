@@ -1,0 +1,33 @@
+- role: user
+  content: "You are tasked with identifying and marking \"sensitive\" words in the question or phrase provided. A \"sensitive\" word is any word or phrase that is crucial for understanding a question and contains specific, essential information. The goal is to ensure that no sensitive information can be inferred from the remaining, unmarked words. If a word or phrase contributes directly to understanding the queston content, it should be marked.
+
+Instructions:
+
+1. Identify the sensitive words: Find all words or phrases that carry essential meaning. Sensitive words may include:
+    Proper nouns (e.g., names of people, places, organizations)
+    Specific dates, events, numerical data
+    Key nouns, verbs, or adjectives that provide essential information
+    Any word or phrase that, when combined with the rest of the sentence, reveals sensitive details
+
+2. Ensure that no sensitive information can be inferred from the remaining words: After marking the sensitive words, it should be impossible to deduce the sensitive content from the rest of the question or sentence. Mark any word that directly contributes to sensitive meaning, even if it seems indirect.
+
+3. Mark the sensitive words: Surround each sensitive word or phrase with <sensitive> and </sensitive> tags.
+
+Examples:
+
+    Input: \"What type of studies explored student motivation?\"
+        Output: \"What type of <sensitive>studies</sensitive> explored <sensitive>student motivation</sensitive>?.\"
+
+    Input: \"Where do plenary meetings take place?\"
+        Output: \"Where do <sensitive>plenary meetings</sensitive> take place?\"
+
+Below is a question from a dataset. Your task is to identify and mark the sensitive words in the question using the provided guidelines.
+Don't write anything else than the new question or answer with marked words.
+
+Context:
+\"Besides Africa, where did Germany have imperial interests?\""
+- role: assistant
+  content: "\"Besides <sensitive>Africa</sensitive>, where did <sensitive>Germany</sensitive> have <sensitive>imperial</sensitive> interests?\""
+- role: user
+  content: "Context:
+\"{context}\""
