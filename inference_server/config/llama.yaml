@@ -1,0 +1,18 @@
+prompt_template:
+    system:
+        begin: "<|start_header_id|>system<|end_header_id|>\n"
+        end: "<|eot_id|>"
+    user:
+        begin: "<|start_header_id|>user<|end_header_id|>\n"
+        end: "<|eot_id|>"
+    assistant:
+        begin: "<|start_header_id|>assistant<|end_header_id|>\n"
+        end: "<|eot_id|>"
+llm_id:
+    repo_id: "bartowski/Meta-Llama-3.1-70B-Instruct-GGUF"
+    filename: "Meta-Llama-3.1-70B-Instruct-Q4_K_L.gguf"
+llm_engine:
+    tokenizer: "mlabonne/Llama-3.1-70B-Instruct-lorablated"
+    tensor_parallel_size: 2
+    max_model_len: 1500
+    gpu_memory_utilization: 0.99
