@@ -1,0 +1,8 @@
+vllm
+pyyaml
+flask
+accelerate
+peft
+python-Levenshtein
+trl
+tensorboard
