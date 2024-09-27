@@ -1,7 +1,7 @@
 import json
 
 content_filter = {}
-filenames = ['squad_0.json', 'squad_1.json']
+filenames = ['slimorca_1.json', 'slimorca_2.json', 'slimorca_3.json']
 for filename in filenames:
     with open(filename, 'r', encoding='utf-8') as file:
         content = json.load(file)['train']
@@ -17,9 +17,9 @@ for filename in filenames:
             del content['Q2']
             del content['A2']
         for entry in content:
-            content_filter[entry['context']] = entry
+            content_filter[entry['question']] = entry
 
-content = list(content_filter.keys())
+content = list(content_filter.values())
 print(len(content))
-with open(f"squad.json", "w", encoding='utf-8') as file:
+with open(f"slimorca.json", "w", encoding='utf-8') as file:
     json.dump({"train": content}, file, indent=4)
