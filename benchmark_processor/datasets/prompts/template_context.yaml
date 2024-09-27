@@ -26,12 +26,15 @@ Examples:
         Output: \"The <sensitive>Amazon River</sensitive> is the <sensitive>second longest</sensitive> river in the world.\" (Even the phrase \"second longest\" is marked because it narrows down the identity of the river.)
 
 Below is a context passage from a dataset. Your task is to identify and mark the sensitive words in the passage using the provided guidelines.
-Don't write anything else than the new question or answer with marked words.
+Don't write anything else than the new context with the sensitive tags. If there is questions, don't answer it, just rewrite the following context
 
 Context:
 \"The Pacific Ocean is the largest and deepest of Earth's oceanic divisions. It extends from the Arctic Ocean in the north to the Southern Ocean in the south and is bounded by Asia and Australia in the west and the Americas in the east. The Pacific Ocean covers more than 63 million square miles and contains more than half of the free water on Earth.\""
 - role: assistant
   content: "\"The <sensitive>Pacific Ocean</sensitive> is the <sensitive>largest</sensitive> and <sensitive>deepest</sensitive> of Earth's oceanic divisions. It extends from the <sensitive>Arctic Ocean</sensitive> in the north to the <sensitive>Southern Ocean</sensitive> in the south and is bounded by <sensitive>Asia</sensitive> and <sensitive>Australia</sensitive> in the west and the <sensitive>Americas</sensitive> in the east. The <sensitive>Pacific Ocean</sensitive> covers more than <sensitive>63 million square miles</sensitive> and contains more than <sensitive>half of the free water on Earth</sensitive>.\""
 - role: user
-  content: "Context:
+  content: "
+  Below is a context passage from a dataset. Your task is to identify and mark the sensitive words in the passage using the provided guidelines.
+Don't write anything else than the new context with the sensitive tags. If there is questions, don't answer it, just rewrite the following context
+  Context:
 \"{context}\""
