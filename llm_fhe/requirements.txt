@@ -1,2 +1,3 @@
 concrete-ml
-torch
+jupyter
+transformers==4.38.0
