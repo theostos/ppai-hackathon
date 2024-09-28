@@ -84,10 +84,6 @@ class DataCollatorForCompletionOnlyLMask(DataCollatorForLanguageModeling):
                     == batch["labels"][i][idx : idx + len(self.response_token_ids)].tolist()
                 ):
                     response_token_ids_start_idx = idx
-            
-            seq_len = batch['position_ids'][i, -1].int()
-            batch['attention_mask'][i, response_token_ids_start_idx:seq_len, :response_token_ids_start_idx] = 1
-            batch['attention_mask'][i, response_token_ids_start_idx:seq_len, response_token_ids_start_idx:seq_len] = torch.tril(torch.ones(seq_len-response_token_ids_start_idx, seq_len-response_token_ids_start_idx))
             if response_token_ids_start_idx is None:
                 warnings.warn(
                     f"Could not find response key `{self.response_template}` in the "
@@ -101,6 +97,10 @@ class DataCollatorForCompletionOnlyLMask(DataCollatorForLanguageModeling):
 
                 # Make pytorch loss function ignore all tokens up through the end of the response key
                 batch["labels"][i, :response_token_ids_end_idx] = self.ignore_index
+            
+            seq_len = batch['position_ids'][i, -1].int()
+            batch['attention_mask'][i, response_token_ids_end_idx:seq_len, :response_token_ids_end_idx] = 1
+            batch['attention_mask'][i, response_token_ids_end_idx:seq_len, response_token_ids_end_idx:seq_len] = torch.tril(torch.ones(seq_len-response_token_ids_end_idx, seq_len-response_token_ids_end_idx))
         # print(batch['input_ids'][0,:])
         # print(batch['labels'][0,:])
         # torch.set_printoptions(threshold=10_000)

@@ -12,13 +12,13 @@ def prepare_tokenizer(tokenizer: AutoTokenizer, token_beg="<sensitive>", token_e
     tokenizer.sensitive_beg_id = tokenizer.encode(token_beg, add_special_tokens=False)[0]
     tokenizer.sensitive_end_id = tokenizer.encode(token_end, add_special_tokens=False)[0]
 
-def generate_custom_mask(tokenizer: AutoTokenizer, prompts: List[str], device='cpu'):
+def generate_custom_mask(tokenizer: AutoTokenizer, prompts: List[str], device='cpu', padding_side='left'):
     """
     Given a prepared tokenizer (i.e. with privacy special tokens), a list of prompts with privacy special tokens,
     tokenize and generate custom masks for a privacy-compatible transformer.
     """
     input_ids = tokenizer(prompts)['input_ids']
-    return generate_custom_mask_input_ids(tokenizer, input_ids, device=device)[0]
+    return generate_custom_mask_input_ids(tokenizer, input_ids, device=device, padding_side='left')[0]
 
 def generate_custom_mask_input_ids(tokenizer: AutoTokenizer, input_ids, device='cpu', padding_side="right"):
     """

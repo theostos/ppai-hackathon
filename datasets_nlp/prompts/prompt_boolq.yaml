@@ -1,0 +1,8 @@
+content: "<|start_header_id|>user<|end_header_id|>
+You are given a yes/no question. Respond by stating: \"The answer is: \" followed by 0 if no or 1 if yes.
+
+Question:
+{question}
+
+<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+<sensitive>The answer is: </sensitive>"

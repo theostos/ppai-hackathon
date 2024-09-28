@@ -1,1 +1,1 @@
-dataset_path: 'data/squad.json'
+dataset_path: 'datasets_nlp/data/merge_slimorca_squad_bis.json'

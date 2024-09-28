@@ -1,0 +1,14 @@
+content: "<|start_header_id|>user<|end_header_id|>
+You are tasked with answering a multiple-choice question. Respond by stating: \"The answer is: \" followed by the number corresponding to the correct answer.
+
+Question:
+{question}
+
+Choices:
+1. {answer_1}
+2. {answer_2}
+3. {answer_3}
+4. {answer_4}
+
+<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+<sensitive>The answer is: </sensitive>"
