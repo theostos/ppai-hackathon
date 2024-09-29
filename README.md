@@ -4,9 +4,9 @@ This project focuses on optimizing large language model (LLM) inference within a
 
 ## Overview
 
-The core idea is to optimize LLM inference by combining clear-text inference with FHE inference, minimizing the costly FHE computations. Our approach follows these steps:
+The core idea is to optimize LLM inference by combining clear-text inference with FHE inference, minimizing the costly FHE computations. We suppose the input of our LLM to be composed of non-FHE tokens, and FHE tokens (basically the sensitive words). Our approach follows these steps:
 
-1. **Initial Inference in Clear**: Perform a first inference in clear text using a GPU, hiding all the sensitive tokens. This step is efficient and reduces the need for FHE.
+1. **Initial Inference in Clear**: Perform a first inference in clear text using a GPU, without attending the FHE tokens in the attention mechanism. This step is efficient and reduces the need for FHE.
   
 2. **FHE Inference for Sensitive Tokens**: Run a second inference to compute the attention between the FHE-encrypted token(s) and the rest of the prompt. For example, if we mask 20% of the tokens, we reduce the attention computation in FHE by a factor of 5.
 
