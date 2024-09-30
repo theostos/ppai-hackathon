@@ -24,7 +24,8 @@ For the sentence
 
 For the standard causal mask, it would have been:
 
-```[1, 0, 0, 0, 0, 0, 0]
+```
+[1, 0, 0, 0, 0, 0, 0]
 [1, 1, 0, 0, 0, 0, 0]
 [1, 1, 1, 0, 0, 0, 0]
 [1, 1, 1, 1, 1, 0, 0]
