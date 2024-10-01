@@ -27,6 +27,8 @@ from transformers.cache_utils import Cache
 from transformers.modeling_outputs import CausalLMOutputWithPast
 from transformers.models.llama import LlamaForCausalLM
 
+from .tokenizers import CustomLlamaTokenizer
+
 class LlamaskForCausalLM(LlamaForCausalLM):
     def __init__(self, config):
         super().__init__(config)
@@ -36,17 +38,23 @@ class LlamaskForCausalLM(LlamaForCausalLM):
     def generate(
             self,
             input_ids: torch.LongTensor = None,
-            attention_mask: Optional[torch.Tensor] = None,
+            attention_mask: torch.Tensor = None,
+            position_ids: torch.LongTensor = None,
             max_tokens: int=32,
             temperature: float=1.0,
+            **kwargs
     ):
-        eos_token_tensor = torch.tensor(self.config.eos_token_id, device=input_ids.device)
+        eos_token_ids = torch.tensor(self.config.eos_token_id, device=input_ids.device)
         for _ in range(max_tokens):
-            outputs = self.forward(input_ids=input_ids, attention_mask=attention_mask)
+            prev_tokens = input_ids[:,-1]
+            is_eos = torch.isin(prev_tokens, eos_token_ids)
+            if is_eos.all():
+                break
+            outputs = self.forward(input_ids=input_ids, attention_mask=attention_mask, position_ids=position_ids)
             logits = outputs['logits'][:,-1,:]/temperature
 
             probs = torch.nn.functional.softmax(logits, dim=-1)
-            next_tokens = torch.multinomial(probs, num_samples=1).squeeze(1)
+            next_tokens = torch.multinomial(probs, num_samples=1).int()
 
             batch_size, seq_len, _ = attention_mask.shape
             expanded_mask = torch.zeros(batch_size, seq_len + 1, seq_len + 1, dtype=attention_mask.dtype, device=attention_mask.device)
@@ -59,13 +67,18 @@ class LlamaskForCausalLM(LlamaForCausalLM):
 
             # Step 3: Set the diagonal of the new token to attend to all previous tokens by setting the new last element to 1
             expanded_mask[:, seq_len, seq_len] = 1
-
-            next_tokens = next_tokens[:, None]
-
             input_ids = torch.cat([input_ids, next_tokens], dim=-1)
+            input_ids[is_eos, -1] = eos_token_ids[0]
+            expanded_mask[is_eos, -1, :] = 0
+
+            last_column_position_ids = position_ids[:, -1]
+            new_position_ids = last_column_position_ids + 1
+            new_position_ids = new_position_ids.unsqueeze(1)
+
+            # Concatenate the new column to the original position_ids tensor along the sequence dimension (dim=1)
+            position_ids = torch.cat((position_ids, new_position_ids), dim=1)
+
             attention_mask = expanded_mask
-            if torch.all(torch.any(next_tokens==eos_token_tensor, dim=1)):
-                break
         return input_ids
 
     def forward(
@@ -114,4 +127,30 @@ class LlamaskForCausalLM(LlamaForCausalLM):
                 cache_position=cache_position,
             )
         return outputs
-    
+
+if __name__ == '__main__':
+    model_id = "meta-llama/Meta-Llama-3.1-8B-Instruct"
+    device = 'cuda:2'
+
+    model = LlamaskForCausalLM.from_pretrained(model_id, torch_dtype= torch.bfloat16)
+    model = model.to(device)
+    tokenizer = CustomLlamaTokenizer.from_pretrained(model_id)
+    tokenizer.add_privacy_tokens()
+
+    # Tokenize some text with the custom tokenizer
+    prompt = """<|start_header_id|>system<|end_header_id|>
+
+You are a helpful assistant.<|eot_id|><|start_header_id|>user<|end_header_id|>
+What is the <privacy>capital</privacy> of <privacy>Tonga</privacy> ?
+<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+"""
+    prompt_clear = prompt.replace('<privacy>', '')
+    prompt_clear = prompt_clear.replace('</privacy>', '')
+
+    model_inputs = tokenizer([prompt_clear, prompt]).to(device)
+
+    outputs = model.generate(temperature=0.7, max_tokens=64, **model_inputs)
+    outputs = outputs[:, model_inputs['input_ids'].shape[1]:]
+    result = tokenizer.batch_decode(outputs, skip_special_tokens=True)
+    for answer in result:
+        print(answer)
